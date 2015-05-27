@@ -1,7 +1,10 @@
+#!/opt/local/bin/python
+
 import hashlib
 import ssdeep
 import sys
 import tlsh
+import os
 
 def md5(file, block_size=2**20):
     f = open(file, 'rb')
@@ -42,13 +45,18 @@ def hash_tlsh(file):
     h = tlsh.hash(f.read())
     return h
 
-file = sys.argv[1]
-
-print "MD5:\t" + md5(file)
-print "SHA1:\t" + sha1(file)
-print "SHA224:\t" + sha224(file)
-print "SHA256:\t" + sha256(file)
-print "SHA384:\t" + sha384(file)
-print "SHA512:\t" + sha512(file)
-print "SSDEEP:\t" + hash_ssdeep(file)
-print "TLSH:\t" + hash_tlsh(file)
+if len(sys.argv) < 2:
+    print "Usage: multihash.py FILENAME"
+else:
+    file = sys.argv[1]
+    if not (os.path.isfile(file) and os.access(file, os.R_OK)):
+        print "Cannot hash file - bad file name or file not readable"
+    else:
+        print "MD5:\t" + md5(file)
+        print "SHA1:\t" + sha1(file)
+        print "SHA224:\t" + sha224(file)
+        print "SHA256:\t" + sha256(file)
+        print "SHA384:\t" + sha384(file)
+        print "SHA512:\t" + sha512(file)
+        print "SSDEEP:\t" + hash_ssdeep(file)
+        print "TLSH:\t" + hash_tlsh(file)
